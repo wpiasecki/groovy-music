@@ -7,15 +7,19 @@ Apresentação:
 - Bootstrap (3.3.7)
 
 Backend:
+- JDK 8
 - REST (JAX-RS 2.0.1/Resteasy)
 - BD (Derby com JPA 2.1/Hibernate)
-- Testes unitários (JUnit e Undertow)
-- Tomcat
+- Tomcat 9
 
 Ambiente:
 - Maven
 - Eclipse Neon
+- Testes unitários (JUnit e Undertow)
+- Git (https://github.com/wpiasecki/groovy-music/)
 
 Melhorias:
-- Utilizar injeção de dependência para desacoplar obtenção de EntityManager entre ambiente de produção e testes
+- Testes de interface com Selenium
+- Utilizar injeção de dependência (Guice? Weld?) para desacoplar obtenção de EntityManager entre ambiente de produção e testes
 - Generalizar persistence.xml para evitar repetição do XML
+
