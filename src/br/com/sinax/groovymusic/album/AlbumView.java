@@ -1,14 +1,9 @@
 package br.com.sinax.groovymusic.album;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import br.com.sinax.groovymusic.artista.ArtistaView;
-import br.com.sinax.groovymusic.musica.MusicaView;
 
 public class AlbumView {
 
-	public List<MusicaView> musicas;
 	public Integer id;
 	public String nome;
 	public Integer ano;
@@ -22,9 +17,10 @@ public class AlbumView {
 		this.nome = a.getNome();
 		this.ano = a.getAno();
 		this.artista = new ArtistaView(a.getArtista());
-		if (a.getMusicas() != null) {
-			this.musicas = a.getMusicas().stream().map(MusicaView::new).collect(Collectors.toList());
-		}
+	}
+
+	public Album converterParaEntidade() {
+		return new Album(id, nome, ano, artista.converterParaEntidade());
 	}
 	
 }

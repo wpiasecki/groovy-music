@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.com.sinax.groovymusic.album.Album;
 import br.com.sinax.groovymusic.album.AlbumView;
 import br.com.sinax.groovymusic.artista.ArtistaView;
 import br.com.sivax.groovymusic.config.BaseTest;
@@ -21,18 +20,7 @@ public class AlbumResourceTest extends BaseTest {
 	public void listar() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		{
-			List<Album> albums = emt.getEm().createNamedQuery("AlbumAll", Album.class).getResultList();
-			Assert.assertEquals(1, albums.size());
-			Album album = albums.get(0);
-			
-			Assert.assertEquals("Dark Side Of The Moon", album.getNome());
-			Assert.assertEquals("Pink Floyd", album.getArtista().getNome());
-		}
-		
-		
-		List<AlbumView> albums = clientBuilder("/album/")
-				.get(new GenericType<List<AlbumView>>(){});
+		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
 
 		AlbumView album = albums.get(0);
 
@@ -42,12 +30,16 @@ public class AlbumResourceTest extends BaseTest {
 	
 	@Test
 	public void salvar() {
+		carregarAmbiente(AmbientePinkFloyd.class);
+		
 		AlbumView album = new AlbumView();
 		album.ano = 1994;
 		album.nome = "The Division Bell";
-		album.artista = new ArtistaView();
-		clientBuilder("/album/").post( Entity.entity(album, MediaType.APPLICATION_JSON ));
+		album.artista = new ArtistaView(1);
 		
+		clientBuilder("/album").post( Entity.entity(album, MediaType.APPLICATION_JSON ));
+		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
+		Assert.assertEquals(2,  albums.size());
 	}
 		
 }

@@ -1,3 +1,36 @@
-<html>
-test for echo
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="js/groovymusic.js"></script>
+<style>
+.table-hover tr {
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+	<div class="container" ng-app="groovymusic" ng-controller="musica">
+		<h3>Groovymusic</h3>
+
+		<div>
+		</div>
+
+		<table class="table table-hover">
+			<tr ng-repeat="musica in musicas">
+				<td>{{ musica.nome }}</td>
+				<td>{{ musica.album.nome }}</td>
+				<td>{{ musica.album.artista.nome }}</td>
+				<td><a href="#" class="glyphicon glyphicon-pencil" ng-click="editar()"></a></td>
+				<td><a href="#" class="glyphicon glyphicon-remove" ng-click="excluir()"></a></td>
+			</tr>
+		</table>
+	</div>
+</body>
 </html>

@@ -3,6 +3,7 @@ package br.com.sivax.groovymusic.config;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.test.TestPortProvider;
@@ -38,9 +39,13 @@ public class BaseTest {
 		emt.recreate();
 	}
 	
-	protected Builder clientBuilder(String path) {
+	public Builder clientBuilder(String path) {
+		return target(path).request();
+	}
+	
+	public WebTarget target(String path) {
 		Client client = ClientBuilder.newClient();
-		return client.target(TestPortProvider.generateURL("/rest" + path)).request();
+		return client.target(TestPortProvider.generateURL("/rest" + path));
 	}
 	
 	protected void carregarAmbiente(Class<? extends Ambiente> clazzAmbiente) {

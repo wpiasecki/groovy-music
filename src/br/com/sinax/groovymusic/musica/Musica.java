@@ -5,12 +5,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 
 import br.com.sinax.groovymusic.album.Album;
 
 
 @Entity
+@NamedQueries(@NamedQuery(name="MusicaAll", query="select m from Musica m"))
 public class Musica {
 
 	@Id
@@ -25,6 +28,12 @@ public class Musica {
 	public Musica() {
 	}
 	
+	public Musica(String nome) {
+		this.nome = nome;
+	}
+
+
+
 	public Musica(String nome, Album album) {
 		this.nome = nome;
 		this.album = album;

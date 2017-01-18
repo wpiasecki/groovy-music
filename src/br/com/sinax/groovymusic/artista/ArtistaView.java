@@ -18,5 +18,13 @@ public class ArtistaView {
 		this.nome = a.getNome();
 	}
 
+	public ArtistaView(int id) {
+		this.id = id;
+	}
+
+	public Artista converterParaEntidade() {
+		return new Artista(id, nome);
+	}
+
 	
 }

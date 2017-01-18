@@ -1,4 +1,4 @@
-package br.com.sinax.groovymusic.album;
+package br.com.sinax.groovymusic.artista;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,26 +14,26 @@ import javax.ws.rs.core.Response;
 import br.com.sinax.groovymusic.config.DI;
 import br.com.sinax.groovymusic.config.EntityManagerImpl;
 
-@Path("/album")
-public class AlbumResource {
+@Path("/artista")
+public class ArtistaResource {
 
-	AlbumService service = new AlbumService( DI.injector().getInstance(EntityManagerImpl.class) );
+	ArtistaService service = new ArtistaService( DI.injector().getInstance(EntityManagerImpl.class) );
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<AlbumView> listar() {
+	public List<ArtistaView> listar() {
 		return service
 				.listar()
 				.stream()
-				.map(AlbumView::new)
+				.map(ArtistaView::new)
 				.collect(Collectors.toList());
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response salvar(AlbumView view) {
+	public Response salvar(ArtistaView view) {
 		service.salvar(view.converterParaEntidade());
 		return Response.ok().build();
 	}
-
+	
 }

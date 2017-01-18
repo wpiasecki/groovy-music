@@ -6,17 +6,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import br.com.sinax.groovymusic.album.Album;
 
 @Entity
+@NamedQueries(@NamedQuery(name="ArtistaAll", query="Select a From Artista a"))
 public class Artista {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="artista_sequence")
-	@SequenceGenerator(name="artista_sequence", sequenceName="artista_sequence")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artista_sequence")
+	@SequenceGenerator(name = "artista_sequence", sequenceName = "artista_sequence")
 	private Integer id;
 	private String nome;
 	@OneToMany
@@ -24,13 +27,16 @@ public class Artista {
 
 	public Artista() {
 	}
-	
+
 	public Artista(String nome) {
 		this.nome = nome;
 	}
 
-	
-	
+	public Artista(Integer id, String nome) {
+		this.id = id;
+		this.nome = nome;
+	}
+
 	public Integer getId() {
 		return id;
 	}
