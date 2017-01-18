@@ -1,0 +1,19 @@
+interface
+  listar album
+  modal artista
+
+persistencia
+  artista
+    testes
+  album
+    testes
+  musica
+    testes
+
+rest
+  artista
+    testes
+  album
+    testes
+  musica
+    testes
