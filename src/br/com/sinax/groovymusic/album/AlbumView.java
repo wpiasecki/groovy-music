@@ -22,7 +22,9 @@ public class AlbumView {
 		this.nome = a.getNome();
 		this.ano = a.getAno();
 		this.artista = new ArtistaView(a.getArtista());
-		this.musicas = a.getMusicas().stream().map(MusicaView::new).collect(Collectors.toList());
+		if (a.getMusicas() != null) {
+			this.musicas = a.getMusicas().stream().map(MusicaView::new).collect(Collectors.toList());
+		}
 	}
 	
 }

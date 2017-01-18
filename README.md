@@ -12,6 +12,7 @@ Tecnologias utilizadas:
 - REST (JAX-RS 2.0.1/Resteasy)
 - BD (Derby com JPA 2.1/Hibernate)
 - Tomcat 9
+- Google Guice
 
 ### Ambiente
 - Maven
@@ -21,6 +22,5 @@ Tecnologias utilizadas:
 
 ### Melhorias
 - Testes de interface com Selenium
-- Utilizar injeção de dependência (Guice? Weld?) para desacoplar obtenção de EntityManager entre ambiente de produção e testes
 - Generalizar persistence.xml para evitar repetição do XML
 
