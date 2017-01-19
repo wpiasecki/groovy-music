@@ -3,8 +3,25 @@
 		<h3 class="modal-title">Editar Música</h3>
 	</div>
 	<div class="modal-body">
-		Nome: <input type="text" /> <br/>
-		Álbum: <select  />
+		<div class="form-group">
+			<label for="nomeMusica">Nome:</label> 
+			<input id="nomeMusica" 
+					type="text" 
+					ng-model="musicaEmEdicao.nome"
+					value="{{ musicaEmEdicao.nome }}" 
+					class="form-control" />
+		</div>
+		<div class="form-group">
+			<label for="albumMusica">Álbum:</label> 
+			<select id="albumMusica" 
+				class="form-control"
+				ng-model="musicaEmEdicao.album">
+				<option 
+					ng-repeat="album in albums" 
+					value="album" 
+					selected="musicaEmEdicao.album.id == album.id">{{ album.nome }}</option>
+			</select>
+		</div>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-success" ng-click="salvarMusica(musicaEmEdicao)">Salvar</button>

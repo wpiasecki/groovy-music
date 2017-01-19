@@ -13,11 +13,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import br.com.groovymusic.artista.Artista;
-import br.com.groovymusic.artista.ArtistaView;
 import br.com.groovymusic.musica.Musica;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "AlbumAll", query = "Select a from Album a") })
+@NamedQueries({ @NamedQuery(name = "AlbumAll", query = "SELECT a FROM Album a ORDER BY a.ano") })
 public class Album {
 
 	@Id

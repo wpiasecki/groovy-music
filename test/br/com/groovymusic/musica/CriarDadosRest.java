@@ -1,7 +1,11 @@
 package br.com.groovymusic.musica;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.ws.rs.client.Client;
@@ -17,7 +21,6 @@ import org.junit.Assert;
 
 import br.com.groovymusic.album.AlbumView;
 import br.com.groovymusic.artista.ArtistaView;
-import br.com.groovymusic.musica.MusicaView;
 
 public class CriarDadosRest {
 	
@@ -42,36 +45,56 @@ public class CriarDadosRest {
 	}
 	
 	public void criarAlbum() {
-		AlbumView album = new AlbumView();
-		album.nome = "Dark Side Of The Moon";
-		album.ano = 1973;
-		album.artista = new ArtistaView(1);
-		postAndAssert("/album", album);
+		
+		BiConsumer<String, Integer> criaAlbum = (nome, ano) -> {
+			AlbumView album = new AlbumView();
+			album.nome = nome;
+			album.ano = ano;
+			album.artista = new ArtistaView(1);
+			postAndAssert("/album", album);
+		};
+		
+		criaAlbum.accept("Delicate Sound of Thunder", 1988);
+		criaAlbum.accept("Dark Side Of The Moon", 1973);
+		criaAlbum.accept("The Division Bell", 1994);
+		
 	}
 	
 	public void criarMusica() {
 		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
 		
-		Consumer<String> criaMusica = nome -> {
+		BiConsumer<String, AlbumView> criaMusica = (nome, album) -> {
 			MusicaView musica = new MusicaView();
 			musica.nome = nome;
-			musica.album = albums.get(0);
+			musica.album = album;
 			postAndAssert("/musica", musica);
 		};
 		
-		List<String> musicas = Arrays.asList(
-				"Speak to me", 
-				"The Great Gig in the Sky", 
-				"Time", 
-				"Any Colour You Like",
-				"Money",
-				"Us and Them", 
-				"Breathe", 
-				"Eclipse");
-		musicas.forEach(criaMusica);
+		Consumer<String> criaMusicaDarkSide = nome -> criaMusica.accept(nome, albums.get(0));
+		Consumer<String> criaMusicaDelicateSoundOfThunder = nome -> criaMusica.accept(nome, albums.get(1));
+		Consumer<String> criaMusicaDivisionBell = nome -> criaMusica.accept(nome, albums.get(2));
 		
-		List<MusicaView> musicasCriadas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
-		Assert.assertEquals(musicas.size(), musicasCriadas.size());
+		Map<Consumer<String>, List<String>> musicas = new HashMap<>();
+		
+		musicas.put(criaMusicaDarkSide, Arrays.asList(
+				"Time", 
+				"Money",
+				"Us and Them"));
+		
+		musicas.put(criaMusicaDivisionBell, Arrays.asList(
+				"Coming Back To Life", 
+				"Marooned", 
+				"High Hopes"));
+		
+		musicas.put(criaMusicaDelicateSoundOfThunder, Arrays.asList(
+				"Shine On You Crazy Diamond",
+				"Learning to Fly",
+				"Sorrow"));
+		
+		musicas.forEach((consumer, list) -> list.forEach(consumer));
+		
+		List<MusicaView> musicasRest = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		Assert.assertEquals(musicasRest.size(), musicas.values().stream().mapToInt(a -> a.size()).sum());
 	}
 	
 	public static void main(String[] args) {

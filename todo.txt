@@ -1,19 +1,20 @@
 interface
-  listar album
-  modal artista
+  [ok] listar 
+  [ok] modal editar musica
+  [ok] excluir
+  pesquisar
+  modal criar album
+  modal criar artista
 
-persistencia
+[ok] persistencia
+  [ok] artista
+  [ok] album
+  [ok] musica
+
+[ok] rest
   artista
     testes
   album
     testes
-  musica
-    testes
-
-rest
-  artista
-    testes
-  album
-    testes
-  musica
+  [ok] musica
     testes

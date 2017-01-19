@@ -48,8 +48,9 @@ public class MusicaResource {
 	
 	@PUT
 	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response atualizarOuCriar(@PathParam("id") Integer id, MusicaView view) {
 		service.atualizar(view.atualizarEntidade(service.obterPorId(Musica.class, id)));
-		return Response.status(200).build();
+		return Response.status(200).entity("Alterado com sucesso").build();
 	}
 }
