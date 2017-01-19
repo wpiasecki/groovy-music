@@ -19,16 +19,31 @@
 	<div class="container" ng-app="groovymusic" ng-controller="musica">
 		<h3>Groovymusic</h3>
 
+		 <div ng-if="status.sucesso" class="alert alert-success">
+		 	{{ status.mensagem }}
+		 </div>
+		 
+		 <div ng-if="status.erro" class="alert alert-danger">
+		 	{{ status.mensagem }}
+		 </div>
+
 		<div>
 		</div>
 
 		<table class="table table-hover">
+			<tr>
+				<th>Música</th>
+				<th>Álbum</th>
+				<th>Artista</th>
+				<th>Editar</th>
+				<th>Excluir</th>
+			</tr>
 			<tr ng-repeat="musica in musicas">
 				<td>{{ musica.nome }}</td>
 				<td>{{ musica.album.nome }}</td>
 				<td>{{ musica.album.artista.nome }}</td>
-				<td><a href="#" class="glyphicon glyphicon-pencil" ng-click="editar()"></a></td>
-				<td><a href="#" class="glyphicon glyphicon-remove" ng-click="excluir()"></a></td>
+				<td><a href="#" class="glyphicon glyphicon-pencil" ng-click="editar(musica)"></a></td>
+				<td><a href="#" class="glyphicon glyphicon-remove" ng-click="excluir(musica)"></a></td>
 			</tr>
 		</table>
 	</div>

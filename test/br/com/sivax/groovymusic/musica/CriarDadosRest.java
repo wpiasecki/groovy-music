@@ -1,6 +1,8 @@
 package br.com.sivax.groovymusic.musica;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -50,18 +52,26 @@ public class CriarDadosRest {
 	public void criarMusica() {
 		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
 		
-		MusicaView musica = new MusicaView();
-		musica.nome = "Time";
-		musica.album = albums.get(0);
-		postAndAssert("/musica", musica);
+		Consumer<String> criaMusica = nome -> {
+			MusicaView musica = new MusicaView();
+			musica.nome = nome;
+			musica.album = albums.get(0);
+			postAndAssert("/musica", musica);
+		};
 		
-		MusicaView musica2 = new MusicaView();
-		musica2.nome = "Us and Them";
-		musica2.album = albums.get(0);
-		postAndAssert("/musica", musica2);
+		List<String> musicas = Arrays.asList(
+				"Speak to me", 
+				"The Great Gig in the Sky", 
+				"Time", 
+				"Any Colour You Like",
+				"Money",
+				"Us and Them", 
+				"Breathe", 
+				"Eclipse");
+		musicas.forEach(criaMusica);
 		
-		List<MusicaView> musicas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
-		Assert.assertEquals(2, musicas.size());
+		List<MusicaView> musicasCriadas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		Assert.assertEquals(musicas.size(), musicasCriadas.size());
 	}
 	
 	public static void main(String[] args) {

@@ -13,7 +13,9 @@ import br.com.sinax.groovymusic.album.Album;
 
 
 @Entity
-@NamedQueries(@NamedQuery(name="MusicaAll", query="select m from Musica m"))
+@NamedQueries({
+	@NamedQuery(name="MusicaAll", query="SELECT m FROM Musica m ORDER BY m.nome, m.album.nome")
+})
 public class Musica {
 
 	@Id
