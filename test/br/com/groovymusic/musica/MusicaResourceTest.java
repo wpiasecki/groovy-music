@@ -2,6 +2,7 @@ package br.com.groovymusic.musica;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
@@ -24,7 +25,7 @@ public class MusicaResourceTest extends BaseTest {
 	public void listar() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<MusicaView> musicas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas = listarMusicas();
 		
 		Assert.assertEquals(1, musicas.size());
 		
@@ -32,12 +33,20 @@ public class MusicaResourceTest extends BaseTest {
 		
 		Assert.assertEquals("Brain Damage", musica.nome);
 	}
+
+	private List<MusicaView> listarMusicas() {
+		return clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+	}
+	
+	private List<AlbumView> listarAlbums() {
+		return clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
+	}
 	
 	@Test
 	public void salvar() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
+		List<AlbumView> albums = listarAlbums();
 		
 		MusicaView musica = new MusicaView();
 		musica.nome = "Time";
@@ -47,7 +56,7 @@ public class MusicaResourceTest extends BaseTest {
 		
 		Assert.assertEquals(200, post.getStatus());
 		
-		List<MusicaView> musicas2 = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas2 = listarMusicas();
 		
 		Assert.assertEquals(2, musicas2.size());
 	}
@@ -71,7 +80,7 @@ public class MusicaResourceTest extends BaseTest {
 	public void salvarSemNome() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
+		List<AlbumView> albums = listarAlbums();
 		
 		MusicaView musica = new MusicaView();
 		musica.nome = "";
@@ -87,7 +96,7 @@ public class MusicaResourceTest extends BaseTest {
 	public void salvarNomeDuplicado() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<AlbumView> albums = clientBuilder("/album").get(new GenericType<List<AlbumView>>(){});
+		List<AlbumView> albums = listarAlbums();
 		
 		MusicaView musica = new MusicaView();
 		musica.nome = "Brain Damage";
@@ -105,23 +114,23 @@ public class MusicaResourceTest extends BaseTest {
 	public void excluir() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<MusicaView> musicas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas = listarMusicas();
 		Assert.assertEquals(1, musicas.size());
 		
 		Response delete = target("/musica").path(musicas.get(0).id.toString()).request().delete();
 		
 		Assert.assertEquals(204, delete.getStatus());
 		
-		List<MusicaView> musicas2 = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas2 = listarMusicas();
 		
 		Assert.assertEquals(0, musicas2.size());
 	}
 	
 	@Test
-	public void update() {
+	public void atualizar() {
 		carregarAmbiente(AmbientePinkFloyd.class);
 		
-		List<MusicaView> musicas = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas = listarMusicas();
 		
 		MusicaView m = musicas.get(0);
 		Assert.assertEquals("Brain Damage", m.nome);
@@ -134,7 +143,7 @@ public class MusicaResourceTest extends BaseTest {
 		
 		Assert.assertEquals(200, put.getStatus());
 		
-		List<MusicaView> musicas2 = clientBuilder("/musica").get(new GenericType<List<MusicaView>>(){});
+		List<MusicaView> musicas2 = listarMusicas();
 		
 		Assert.assertEquals("Money", musicas2.get(0).nome);
 	}
@@ -148,6 +157,7 @@ public class MusicaResourceTest extends BaseTest {
 				.queryParam("albumId", 1)
 				.request()
 				.get(new GenericType<List<MusicaView>>(){});
+		
 		Assert.assertEquals(2, musicas.size());
 		Assert.assertEquals(Arrays.asList("Brain Damage", "Time"), 
 				musicas.stream().map(m -> m.nome).collect(Collectors.toList()));
@@ -165,6 +175,40 @@ public class MusicaResourceTest extends BaseTest {
 		Assert.assertEquals(3, musicas.size());
 		Assert.assertEquals(Arrays.asList("Learning to Fly", "Shine On You Crazy Diamond", "Sorrow"), 
 				musicas.stream().map(m -> m.nome).collect(Collectors.toList()));
+	}
+	
+	
+	@Test
+	public void trocarMusicaDeAlbum() {
+		carregarAmbiente(AmbientePinkFloyd2Albums.class);
+		
+		List<MusicaView> musicas = listarMusicas();
+		Assert.assertEquals(4, musicas.size());
+		
+		Function<List<MusicaView>, MusicaView> procurarShineOn = musicasView ->
+			musicasView.stream()
+			.filter(musica -> musica.nome.equals("Shine On You Crazy Diamond"))
+			.findFirst()
+			.get();
+		
+		MusicaView shineOn = procurarShineOn.apply(musicas);
+		
+		Assert.assertEquals(shineOn.album.nome, "Delicate Sound of Thunder");
+		
+		List<AlbumView> albums = listarAlbums();
+		AlbumView darkSide = albums.stream().filter(album -> album.nome.equals("Dark Side Of The Moon")).findFirst().get();
+		shineOn.album = darkSide;
+		
+		Response put = target("/musica")
+				.path(shineOn.id.toString())
+				.request()
+				.put(Entity.entity(shineOn, MediaType.APPLICATION_JSON));
+		
+		Assert.assertEquals(200, put.getStatus());
+		
+		AlbumView darkSide2 = procurarShineOn.apply(listarMusicas()).album;
+		Assert.assertEquals("Dark Side Of The Moon", darkSide2.nome);
+		Assert.assertEquals(darkSide.id, darkSide2.id);
 	}
 	
 }

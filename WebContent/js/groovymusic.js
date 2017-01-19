@@ -20,7 +20,7 @@
 		$scope.listarAlbums  = () => albumService.listar(result => $scope.albums = result.data);
 		
 		
-		$scope.musicaFiltro = { nome: "", albumId: "-1" };
+		$scope.musicaFiltro = { nome: "", albumId: "" };
 		$scope.filtrarMusicas = filtro => {
 			if (!filtro.albumId) delete filtro.albumId;
 			musicaService.filtrar(result => $scope.musicas = result.data, filtro);

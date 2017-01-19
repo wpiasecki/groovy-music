@@ -15,11 +15,8 @@
 			<label for="albumMusica">Álbum:</label> 
 			<select id="albumMusica" 
 				class="form-control"
-				ng-model="musicaEmEdicao.album">
-				<option 
-					ng-repeat="album in albums" 
-					value="album" 
-					selected="musicaEmEdicao.album.id == album.id">{{ album.nome }}</option>
+				ng-model="musicaEmEdicao.album"
+				ng-options="album.nome for album in albums track by album.id">
 			</select>
 		</div>
 	</div>

@@ -23,6 +23,7 @@ public class MusicaView {
 	
 	public Musica atualizarEntidade(Musica m) {
 		m.setNome(nome);
+		m.setAlbum(album.converterParaEntidade());
 		return m;
 	}
 	
