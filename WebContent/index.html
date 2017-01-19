@@ -24,9 +24,31 @@
 	
 		<h3>Groovymusic</h3>
 		
-
 		<div ng-if="status.tipo == 'sucesso'" class="alert alert-success">{{ status.mensagem }}</div>
 		<div ng-if="status.tipo == 'erro'" class="alert alert-danger">{{ status.mensagem }}</div>
+		
+		<form class="form-group" role="search">
+			<label class="col-lg-1 col-form-label">Filtros</label>
+			<label for="nomeMusicaFiltro" class="col-lg-1 col-form-label">Nome:</label>
+			<div class="col-lg-3"> 
+				<input id="nomeMusicaFiltro"
+					type="text" 
+					ng-model="musicaFiltro.nome"
+					value="{{ musicaFiltro.nome }}" 
+					class="form-control" />
+			</div>
+			<label for="albumMusicaFiltro" class="col-lg-1 col-form-label">Álbum:</label> 
+			<div class="col-lg-3">
+				<select id="albumMusicaFiltro" 
+					class="form-control"
+					ng-model="musicaFiltro.albumId"
+					ng-options="album.id as album.nome for album in albums">
+					<option value="">[Todos]</option>
+				</select>
+			</div>
+			<button class="btn btn-success" ng-click="filtrarMusicas(musicaFiltro)" class="col-lg-1">Filtrar</button>
+			<button class="btn" ng-click="modalNovaMusica.close()" class="col-lg-1">Nova música</button>
+		</form>
 
 		<table class="table table-hover">
 			<tr>

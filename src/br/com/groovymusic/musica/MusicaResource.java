@@ -11,11 +11,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.com.groovymusic.config.DI;
 import br.com.groovymusic.config.EntityManagerImpl;
+import br.com.groovymusic.config.ValidacaoException;
 
 @Path("/musica")
 public class MusicaResource {
@@ -24,9 +26,11 @@ public class MusicaResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<MusicaView> listar() {
+	public List<MusicaView> listar(
+			@QueryParam("nome") String nome, 
+			@QueryParam("albumId") Integer albumId) {
 		return service
-				.listar()
+				.listar(new MusicaFiltro(nome, albumId))
 				.stream()
 				.map(MusicaView::new)
 				.collect(Collectors.toList());
@@ -35,10 +39,25 @@ public class MusicaResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response salvar(MusicaView view) {
-		service.salvar(view.converterParaEntidade());
-		return Response.ok().build();
+		return validar(() -> service.salvar(view.converterParaEntidade()));
 	}
 	
+	
+	private Response validar(Runnable r) {
+		try {
+			r.run();
+			return Response.ok().build();
+		}
+		catch (ValidacaoException ve) {
+			ve.printStackTrace();
+			return Response.status(ve.getStatus()).entity(ve.getMessage()).build();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+
 	@DELETE
 	@Path("/{id}")
 	public Response excluir(@PathParam("id") Integer id) {
@@ -50,7 +69,6 @@ public class MusicaResource {
 	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response atualizarOuCriar(@PathParam("id") Integer id, MusicaView view) {
-		service.atualizar(view.atualizarEntidade(service.obterPorId(Musica.class, id)));
-		return Response.status(200).entity("Alterado com sucesso").build();
+		return validar(() -> service.atualizar(view.atualizarEntidade(service.obterPorId(Musica.class, id))));
 	}
 }

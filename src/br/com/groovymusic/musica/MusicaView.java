@@ -18,7 +18,7 @@ public class MusicaView {
 	}
 	
 	public Musica converterParaEntidade() {
-		return new Musica(nome, album.converterParaEntidade());
+		return new Musica(nome, album != null ? album.converterParaEntidade() : null);
 	}
 	
 	public Musica atualizarEntidade(Musica m) {

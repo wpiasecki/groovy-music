@@ -14,7 +14,7 @@ import br.com.groovymusic.album.Album;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="MusicaAll", query="SELECT m FROM Musica m ORDER BY m.nome, m.album.nome")
+	@NamedQuery(name="MusicaAll", query="SELECT m FROM Musica m ORDER BY m.nome, m.album.nome"),
 })
 public class Musica {
 

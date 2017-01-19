@@ -1,11 +1,13 @@
 (function() {
+	'use strict';
 	
 	var app = angular.module('groovymusic', ['ui.bootstrap']);
 	
 	var musicaService = function($http) {
 		this.listar    = callback => $http.get('rest/musica').then(callback);
-		this.excluir   = musica   => $http.delete('rest/musica/' + musica.id);
-		this.atualizar = musica   => $http.put('rest/musica/' + musica.id, musica);
+		this.filtrar   = (callback, params) => $http.get('rest/musica', { params: params }).then(callback);
+		this.excluir   = musica => $http.delete('rest/musica/' + musica.id);
+		this.atualizar = musica => $http.put('rest/musica/' + musica.id, musica);
 	}
 	
 	var albumService = function($http) {
@@ -17,6 +19,14 @@
 		$scope.listarMusicas = () => musicaService.listar(result => $scope.musicas = result.data );
 		$scope.listarAlbums  = () => albumService.listar(result => $scope.albums = result.data);
 		
+		
+		$scope.musicaFiltro = { nome: "", albumId: "-1" };
+		$scope.filtrarMusicas = filtro => {
+			if (!filtro.albumId) delete filtro.albumId;
+			musicaService.filtrar(result => $scope.musicas = result.data, filtro);
+		};
+				
+		
 		var apresentarMensagem = params => response => {
 			$scope.status = params;
 			console.log('apresentar mensagem', params)
@@ -24,8 +34,6 @@
 		};
 		
 		$scope.salvarMusica = musica => {
-			console.log('salvar musica');
-			console.log(musica);
 			musicaService.atualizar(musica).then(
 					apresentarMensagem({ tipo: 'sucesso', mensagem:"Música atualizada com sucesso" }),
 					apresentarMensagem({ tipo: 'erro', mensagem:"Erro ao atualizar música" })

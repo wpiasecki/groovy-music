@@ -2,7 +2,8 @@ interface
   [ok] listar 
   [ok] modal editar musica
   [ok] excluir
-  pesquisar
+  [ok] pesquisar
+  nova musica
   modal criar album
   modal criar artista
 
@@ -12,9 +13,9 @@ interface
   [ok] musica
 
 [ok] rest
-  artista
-    testes
-  album
+  [ok] artista
+  	testes
+  [ok] album
     testes
   [ok] musica
     testes

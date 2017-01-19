@@ -59,6 +59,10 @@ public class BaseService<T> {
 			em.remove(t);
 		});
 	}
+	
+	public QueryDinamica<T> queryDinamica(String projecao, Class<T> clazz) {
+		return new QueryDinamica<T>(em, projecao, clazz);
+	}
 
 	public EntityManager getEm() {
 		return em;
