@@ -4,10 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-touch.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.4.0.js"></script>
 <script src="js/groovymusic.js"></script>
+
 <style>
 .table-hover tr {
 	cursor: pointer;
@@ -16,19 +20,13 @@
 </head>
 
 <body>
-	<div class="container" ng-app="groovymusic" ng-controller="musica">
+	<div class="container" ng-app="groovymusic" ng-controller="musicaController">
+	
 		<h3>Groovymusic</h3>
+		
 
-		 <div ng-if="status.sucesso" class="alert alert-success">
-		 	{{ status.mensagem }}
-		 </div>
-		 
-		 <div ng-if="status.erro" class="alert alert-danger">
-		 	{{ status.mensagem }}
-		 </div>
-
-		<div>
-		</div>
+		<div ng-if="status.tipo == 'sucesso'" class="alert alert-success">{{ status.mensagem }}</div>
+		<div ng-if="status.tipo == 'erro'" class="alert alert-danger">{{ status.mensagem }}</div>
 
 		<table class="table table-hover">
 			<tr>
@@ -42,10 +40,11 @@
 				<td>{{ musica.nome }}</td>
 				<td>{{ musica.album.nome }}</td>
 				<td>{{ musica.album.artista.nome }}</td>
-				<td><a href="#" class="glyphicon glyphicon-pencil" ng-click="editar(musica)"></a></td>
-				<td><a href="#" class="glyphicon glyphicon-remove" ng-click="excluir(musica)"></a></td>
+				<td><a href="#" class="glyphicon glyphicon-pencil" ng-click="abrirModalEditarMusica(musica)"></a></td>
+				<td><a href="#" class="glyphicon glyphicon-remove" ng-click="excluirMusica(musica)"></a></td>
 			</tr>
 		</table>
+		
 	</div>
 </body>
 </html>

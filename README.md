@@ -21,6 +21,6 @@ Tecnologias utilizadas:
 - Git (https://github.com/wpiasecki/groovy-music/)
 
 ### Melhorias
-- Testes de interface com Selenium
+- Testes de interface com Selenium e do próprio Angular
 - Generalizar persistence.xml para evitar repetição do XML
-
+- O código das operações CRUD das classes Resource e Service ficou com bastante repetição, verificar se há possibilidade de generalização

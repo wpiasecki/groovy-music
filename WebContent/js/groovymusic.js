@@ -1,6 +1,6 @@
 (function() {
 	
-	var app = angular.module('groovymusic', []);
+	var app = angular.module('groovymusic', ['ui.bootstrap']);
 	
 	var musicaService = function($http) {
 		this.listar = callback => $http.get('rest/musica').then(callback);
@@ -8,43 +8,47 @@
 		this.editar = params => $http.put('rest/musica/' + params.musica.id);
 	}
 	
-	app.service('musicaService', ['$http', musicaService]);
 	
-	
-	var musicaController = function($scope, $http, $timeout, musicaService) {
+	var musicaController = function($scope, $http, $timeout, $uibModal, musicaService) {
 		musicaService.listar(result => $scope.musicas = result.data );
 		
-		$scope.editar = musica => {
-			alert('editar ' + musica.nome);
-			console.log(musicaService);
+		var apresentarMensagem = params => response => {
+			$scope.status = params;
+			$timeout(() => $scope.status = {}, 7000);
+		};
+		
+		$scope.salvarMusica = musica => {
+			console.log('salvar musica');
+			console.log(musica);
 		}
 		
-		$scope.excluir = musica => {
+		$scope.excluirMusica = musica => {
 			if (confirm("Tem certeza de que deseja excluir '" + musica.nome + "'?")) {
 				musicaService.excluir(musica).then( 
-					(response) => { 
-						$scope.status = {
-							sucesso: true,
-							mensagem: "Música excluída com sucesso!"
-						}
-					},
-					(response) => {
-						$scope.status = {
-							erro: true,
-							mensagem: "Ocorreu um erro ao excluir a música."
-						}
-					}
+					apresentarMensagem({tipo: 'sucesso', mensagem: "Música excluída com sucesso!"}),
+					apresentarMensagem({tipo: 'erro', mensagem: "Ocorreu um erro ao excluir a música."})
 				).then(() => {
-					$timeout(() => { 
-						$scope.status.erro = false; 
-						$scope.status.sucesso = false; 
-					}, 7000);
 					musicaService.listar(result => $scope.musicas = result.data );
 				});
 			}
 		}
+		
+		$scope.abrirModalEditarMusica = musica => {
+			$scope.musicaEmEdicao = musica;
+			$scope.showModal = true;
+			$scope.modalEditar = $uibModal.open({
+				templateUrl: 'partials/modal.html',
+			    controller: 'musicaController',
+			    controllerAs: '$ctrl',
+			    scope: $scope,
+			    resolve: { 
+			    	musicaEmEdicao: () => musica,
+		    	}
+			});
+		}
 	}
 	
-	app.controller('musica', ['$scope', '$http', '$timeout', 'musicaService', musicaController]);
+	app.service('musicaService', ['$http', musicaService]);
+	app.controller('musicaController', ['$scope', '$http', '$timeout', '$uibModal', 'musicaService', musicaController]);
 	
 })();
