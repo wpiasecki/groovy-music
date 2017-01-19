@@ -46,11 +46,11 @@ public class MusicaResource {
 	private Response validar(Runnable r) {
 		try {
 			r.run();
-			return Response.ok().build();
+			return Response.ok(200, MediaType.TEXT_PLAIN).build();
 		}
-		catch (ValidacaoException ve) {
-			ve.printStackTrace();
-			return Response.status(ve.getStatus()).entity(ve.getMessage()).build();
+		catch (ValidacaoException e) {
+			e.printStackTrace();
+			return Response.status(e.getStatus()).entity(e.getMessage()).build();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

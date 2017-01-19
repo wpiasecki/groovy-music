@@ -7,7 +7,9 @@
 		this.listar    = callback => $http.get('rest/musica').then(callback);
 		this.filtrar   = (callback, params) => $http.get('rest/musica', { params: params }).then(callback);
 		this.excluir   = musica => $http.delete('rest/musica/' + musica.id);
-		this.atualizar = musica => $http.put('rest/musica/' + musica.id, musica);
+		this.salvar = musica => musica.id ?
+				$http.put('rest/musica/' + musica.id, musica) :
+					$http.post('rest/musica/', musica);
 	}
 	
 	var albumService = function($http) {
@@ -16,9 +18,8 @@
 	
 	var musicaController = function($scope, $http, $timeout, $uibModal, musicaService, albumService) {
 		
-		$scope.listarMusicas = () => musicaService.listar(result => $scope.musicas = result.data );
+		$scope.listarMusicas = () => musicaService.listar(result => $scope.musicas = result.data);
 		$scope.listarAlbums  = () => albumService.listar(result => $scope.albums = result.data);
-		
 		
 		$scope.musicaFiltro = { nome: "", albumId: "" };
 		$scope.filtrarMusicas = filtro => {
@@ -29,16 +30,15 @@
 		
 		var apresentarMensagem = params => response => {
 			$scope.status = params;
-			console.log('apresentar mensagem', params)
+			console.log('apresentar mensagem', params, response);
 			$timeout(() => $scope.status = {}, 7000);
 		};
 		
 		$scope.salvarMusica = musica => {
-			musicaService.atualizar(musica).then(
+			musicaService.salvar(musica).then(
 					apresentarMensagem({ tipo: 'sucesso', mensagem:"Música atualizada com sucesso" }),
-					apresentarMensagem({ tipo: 'erro', mensagem:"Erro ao atualizar música" })
-			).then($scope.modalEditar.close)
-			 .then($scope.atualizarLista);
+					apresentarMensagem({ tipo: 'erro', mensagem:"Erro ao salvar música" })
+			).then($scope.modalEditar.close).then($scope.listarMusicas);
 		}
 		
 		$scope.excluirMusica = musica => {
@@ -55,12 +55,7 @@
 			$scope.showModal = true;
 			$scope.modalEditar = $uibModal.open({
 				templateUrl: 'partials/modal.html',
-			    controller: 'musicaController',
-			    controllerAs: '$ctrl',
 			    scope: $scope,
-			    resolve: { 
-			    	musicaEmEdicao: () => musica,
-		    	}
 			});
 		}
 		
