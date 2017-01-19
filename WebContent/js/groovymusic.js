@@ -3,17 +3,9 @@
 	var app = angular.module('groovymusic', []);
 	
 	var musicaService = function($http) {
-		this.listar = callback => {
-			return $http.get('rest/musica').then(callback);
-		};
-		
-		this.excluir = musica => {
-			return $http.delete('rest/musica/' + musica.id);
-		};
-		
-		this.editar = params => {
-			return $http.put('rest/musica/' + params.musica.id).then(params.successo, params.erro);
-		};
+		this.listar = callback => $http.get('rest/musica').then(callback);
+		this.excluir = musica => $http.delete('rest/musica/' + musica.id);
+		this.editar = params => $http.put('rest/musica/' + params.musica.id);
 	}
 	
 	app.service('musicaService', ['$http', musicaService]);
@@ -39,14 +31,14 @@
 					(response) => {
 						$scope.status = {
 							erro: true,
-							mensagem: "Ocorreu um erro ao excluir a música :-("
+							mensagem: "Ocorreu um erro ao excluir a música."
 						}
 					}
 				).then(() => {
 					$timeout(() => { 
 						$scope.status.erro = false; 
 						$scope.status.sucesso = false; 
-					}, 5000);
+					}, 7000);
 					musicaService.listar(result => $scope.musicas = result.data );
 				});
 			}
